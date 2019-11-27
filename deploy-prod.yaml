@@ -1,0 +1,67 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: riverconsulting-prod-deployment
+  labels:
+    app: riverconsulting
+    env: prod
+  namespace: prod
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: riverconsulting
+  template:
+    metadata:
+      labels:
+        app: riverconsulting
+    spec:
+      containers:
+      - name: riverconsulting
+        image: karthequian/helloworld:latest
+        ports:
+        - containerPort: 80
+        resources:
+         limits:
+          memory: "128Mi"
+          cpu: "500m"
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: riverconsulting-service
+  labels:
+    app: riverconsulting-service
+    env: prod
+  namespace: prod
+spec:
+  type: ClusterIP
+  selector:
+    app: riverconsulting
+  ports:
+  - name: riverconsulting-port
+    protocol: TCP
+    port: 80
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/whitelist-source-range: 0.0.0.0
+  name: riverconsulting-nginx
+  namespace: prod
+spec:
+  tls:
+  - hosts:
+    - riverconsulting.westeurope.cloudapp.azure.com
+    secretName: prod-letsencrypt
+  rules:
+    - host: riverconsulting.westeurope.cloudapp.azure.com
+      http:
+        paths:
+          - backend:
+              serviceName: riverconsulting-service
+              servicePort: 80
+            path: /
