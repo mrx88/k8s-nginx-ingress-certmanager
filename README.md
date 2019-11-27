@@ -43,7 +43,7 @@ kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true
 # Add the Jetstack Helm repository
 helm repo add jetstack https://charts.jetstack.io
 # Install the cert-manager helm chart
-elm install --name cert-manager --namespace cert-manager jetstack/cert-manager
+helm install --name cert-manager --namespace cert-manager jetstack/cert-manager
 ```
 
 # LetsEncrypt certificates
@@ -56,6 +56,13 @@ kubectl apply -f cluster-issuer.yaml
 kubectl get clusterissuer
 ```
 
+# Deploy manifests
+```
+# dev namespace
+kubectl delete -f deploy-test.yaml
+# prod namespace
+kubectl apply -f deploy-prod.yaml
+```
 
 # Verify
 
