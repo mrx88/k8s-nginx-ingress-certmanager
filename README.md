@@ -59,7 +59,7 @@ kubectl get clusterissuer
 # Deploy manifests
 ```
 # dev namespace
-kubectl delete -f deploy-test.yaml
+kubectl apply -f deploy-test.yaml
 # prod namespace
 kubectl apply -f deploy-prod.yaml
 ```
