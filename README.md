@@ -34,16 +34,17 @@ For testing, lets use different namespaces:
 
 ```
 # Install CRDs
-kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.11/deploy/manifests/00-crds.yaml
+kubectl apply --validate=false -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.12/deploy/manifests/00-crds.yaml
+
 
 # Separate namespace
 kubectl create namespace cert-manager
-kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true
  
 # Add the Jetstack Helm repository
 helm repo add jetstack https://charts.jetstack.io
+helm repo update
 # Install the cert-manager helm chart
-helm install --name cert-manager --namespace cert-manager jetstack/cert-manager
+helm install --name cert-manager --namespace cert-manager --version v0.12.0 jetstack/cert-manager
 ```
 
 # LetsEncrypt certificates
@@ -68,6 +69,7 @@ kubectl apply -f deploy-prod.yaml
 
 ```
 kubectl logs po/cert-manager-6464494858-pwzbc -n cert-manager
+kubectl describe orders --all-namespaces
 kubectl get certificates
 kubectl describe certificates/test-staging-letsencrypt
 kubectl logs nginx-ingress-controller-7d9f786f5-wp5bv -n kube-system
